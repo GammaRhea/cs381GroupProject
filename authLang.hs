@@ -5,22 +5,23 @@ import Prelude
 type Name   = String
 
 data User   = Info Name Permission
+ deriving (Show)
 
-data Action = Login | Read_Tree 
+data Action = Login | Read_Tree
 -- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
 
 data Math = Add Int Int
-	|   Sub Int Int
-	|   Mul Int Int
-	|   Div Int Int
+ |   Sub Int Int
+ |   Mul Int Int
+ |   Div Int Int
 
 
 
 data Auth   = Granted | Denied
-	deriving (Show)
+ deriving (Show)
 
 data Permission = Admin | Regular | Banned
-
+ deriving (Show)
 
 
 
@@ -38,8 +39,8 @@ calc (Add x y) = Just (x + y)
 calc (Sub x y) = Just (x - y)
 calc (Mul x y) = Just (x * y)
 calc (Div x y) = case y of
-	0 -> Nothing
-	_ -> Just (x `div` y)
+ 0 -> Nothing
+ _ -> Just (x `div` y)
 
 program :: Action -> User -> Auth
 program Login (Info _ Admin) = Granted
@@ -51,11 +52,9 @@ program Read_Tree (Info _ Admin) = Granted -- later can make it show it actually
 program Read_Tree (Info _ _) = Denied
 
 
-ex1 = program Login connor 
+ex1 = program Login connor
 ex2 = program Login bob
 ex3 = program Login tim
 ex4 = program Read_Tree connor
 ex5 = program Read_Tree bob
 ex6 = program Read_Tree tim
-
-
