@@ -67,6 +67,17 @@ sem (If _ tc fc) = Error
 -- While Expression
 -- COME BACK TOO
 
+listOfUsers::[User] 
+listOfUsers = [connor, bob, tim]
+
+addNewUser :: [User] -> User -> [User]
+addNewUser [] newUser = addToList newUser 
+addNewUser (x:xs) newUser = (addToList x) ++ addNewUser xs newUser
+
+addToList :: User -> [User] 
+addToList u = [u]
+
+
 --shows tuple of different users
 ex1 = connor 
 ex2 = tim
@@ -94,15 +105,6 @@ ex110 = addNewUser newListOfUsers (Info ("First Last", Admin)) -- Prints list wi
 newListOfUsers = addNewUser listOfUsers (Info ("John Doe",Banned)) 
 
 
-listOfUsers::[User] 
-listOfUsers = [connor, bob, tim]
-
-addNewUser :: [User] -> User -> [User]
-addNewUser [] newUser = addToList newUser 
-addNewUser (x:xs) newUser = (addToList x) ++ addNewUser xs newUser
-
-addToList :: User -> [User] 
-addToList u = [u]
 
 
 
