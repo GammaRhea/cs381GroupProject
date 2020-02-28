@@ -26,19 +26,19 @@ Examples 100 and 110 are cases relating to our list of users, which is still in 
 relate to the manipulation of our list of valid users.
 
 Command List with expected output:
-ex1  : Info ("Connor",Admin)
-ex2  : Info ("Tim Timmerson",Banned)
-ex3  : B Granted
-ex4  : B Denied
-ex5  : Lit 15
-ex5a : Error
-ex6  : Lit 1
-ex7  : B Granted
-ex8  : B Denied
-ex9  : Lit 10
-ex11 : Info ("Eric Walkingshaw",Admin)
-ex12 : "TestUser"
-ex13 : Just (Info ("Connor",Admin))
-ex14 : Nothin
-ex15 : Admin
-ex16 : Regular
+ex1  : Info ("Connor",Admin)  
+ex2  : Info ("Tim Timmerson",Banned)  
+ex3  : B Granted  
+ex4  : B Denied  
+ex5  : Lit 15  
+ex5a : Error  
+ex6  : Lit 1  
+ex7  : B Granted  
+ex8  : B Denied  
+ex9  : Lit 10  
+ex11 : Info ("Eric Walkingshaw",Admin)  
+ex12 : "TestUser"  
+ex13 : Just (Info ("Connor",Admin))  
+ex14 : Nothing  
+ex15 : Admin  
+ex16 : Regular  
