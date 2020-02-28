@@ -1,5 +1,5 @@
 # cs381GroupProject
-Group of 
+Group of   
 (Connor G: greenwac)  
 (Conner M: maddaloc)  
 (Conner R: rheac)  
