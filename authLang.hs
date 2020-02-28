@@ -1,4 +1,5 @@
 import Prelude
+import Control.Monad
 
 -- Homework 2 Tree
 
@@ -15,13 +16,11 @@ data Math = Add Int Int
  |   Mul Int Int
  |   Div Int Int
 
-
-
 data Auth   = Granted | Denied
  deriving (Show)
 
 data Permission = Admin | Regular | Banned
- deriving (Show)
+ deriving (Eq,Show)
 
 
 
@@ -58,3 +57,5 @@ ex3 = program Login tim
 ex4 = program Read_Tree connor
 ex5 = program Read_Tree bob
 ex6 = program Read_Tree tim
+
+

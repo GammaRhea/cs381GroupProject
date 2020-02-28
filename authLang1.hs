@@ -1,4 +1,6 @@
 import Prelude
+import System.IO
+import Data.List
 
 type Name   = String
 type Lit    = Int
@@ -77,6 +79,22 @@ addNewUser (x:xs) newUser = (addToList x) ++ addNewUser xs newUser
 addToList :: User -> [User] 
 addToList u = [u]
 
+getName :: User -> Name
+getName (Info (un,_)) = un
+
+userExists :: Name -> [User] -> Maybe User
+userExists un (x:xs) = if un == getName(x) then Just x
+                       else userExists un xs
+userExists un []     = Nothing
+
+login = do
+      putStrLn "Enter your username: "
+      line <- getLine
+      case userExists line listOfUsers of
+        Just u  -> putStrLn $ "Greetings " ++ getName u
+        Nothing -> putStrLn "Invalid Username"
+
+--loop = do
 
 --shows tuple of different users
 ex1 = connor 
@@ -103,9 +121,6 @@ ex11 = defUser (UserVar "eric" "Eric Walkingshaw" Admin)
 ex100 = listOfUsers -- Prints current Users
 ex110 = addNewUser newListOfUsers (Info ("First Last", Admin)) -- Prints list with a new run time created user
 newListOfUsers = addNewUser listOfUsers (Info ("John Doe",Banned)) 
-
-
-
 
 
 
