@@ -44,7 +44,7 @@ data Var
 defUser :: Var -> User
 defUser (UserVar nameOfVar name perm) = let nameOfVar = Info (name, perm) in nameOfVar
 -- defUser (UserVar nameOfVar name perm) = nameOfUser where nameOfUser = Info(name, perm)
-								
+
 
 sem:: Expr -> Expr
 -- Math Expressions
@@ -87,14 +87,16 @@ userExists un (x:xs) = if un == getName(x) then Just x
                        else userExists un xs
 userExists un []     = Nothing
 
+getPerm :: User -> Permission
+getPerm (Info(_,perm)) = perm
+
 login = do
       putStrLn "Enter your username: "
       line <- getLine
       case userExists line listOfUsers of
         Just u  -> putStrLn $ "Greetings " ++ getName u
-        Nothing -> putStrLn "Invalid Username"
-
---loop = do
+        Nothing -> do putStrLn "Invalid Username"
+                      login
 
 --shows tuple of different users
 ex1 = connor 
@@ -117,6 +119,18 @@ ex9 =  sem (If (sem (Login connor)) (sem (Add (Lit 5) (Lit 5))) (B Denied) )
 -- Defines a userVariable; only defition functionality currently, Referencing to come
 ex11 = defUser (UserVar "eric" "Eric Walkingshaw" Admin)
 
+-- Performs the getName function, which returns the Name of a User
+ex12 = getName (Info ("TestUser", Admin))
+
+-- Checks to see if a user exists, and if they do, then itoutputs their user information
+ex13 = userExists ("Connor") (listOfUsers)
+
+--Failure case of userExists, this is what happens when you try and invalid username, returns Nothing
+ex14 = userExists ("Conner") (listOfUsers)
+
+-- Performs the getPerm function, which returns the Permissions of a User
+ex15 = getPerm connor
+ex16 =  getPerm bob
 
 ex100 = listOfUsers -- Prints current Users
 ex110 = addNewUser newListOfUsers (Info ("First Last", Admin)) -- Prints list with a new run time created user
