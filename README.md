@@ -1,9 +1,9 @@
 # cs381GroupProject
 Group of 
-Connor G: greenwac
-Conner M: maddaloc
-Conner R: rheac
-Arman H: hastinar
+(Connor G: greenwac)
+(Conner M: maddaloc)
+(Conner R: rheac)
+(Arman H: hastinar)
 
 Hello! And welcome to AuthLang, our language for the cs381 group project.
 AuthLang is a language specifically designed to emulate a login based system, where different users have
