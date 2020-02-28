@@ -42,3 +42,5 @@ ex13 : Just (Info ("Connor",Admin))
 ex14 : Nothing  
 ex15 : Admin  
 ex16 : Regular  
+ex100 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned)]  
+ex110 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned),Info ("John Doe",Banned),Info ("First Last",Admin)]  
