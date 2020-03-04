@@ -41,8 +41,6 @@ getPerm :: User -> Permission
 getPerm (Info(_,_, perm,_)) = perm
 
 
--- currently only tells you if you have correct pass or not
--- When complete should also change the user's LoggedIn bool to true
 login :: User -> Password -> String
 login user enteredPass = if getPass user == enteredPass
 						then "You are logged in"
@@ -54,6 +52,10 @@ ex2 = login connor "ASDFASDf"
 ex3 = login tim "password"
 ex4 = login tim "asdfasdf"
 
+
+-- idk how to make it so the global listOfUsers stays updated...
+addUser :: User -> (UserEnv listOfUsers) -> (UserEnv listOfUsers)
+addUser u (listOfUsers)  = listOfUsers ++ [u]
 
 
 
