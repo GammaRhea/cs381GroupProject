@@ -15,7 +15,7 @@ data User         =  Info (Name, Password, Permission, LoggedIn)
  deriving (Eq, Show)
 
 data AuthBool     = Granted | Denied
- deriving (Show)
+  deriving (Eq,Show)
 
 data Permission   = Admin | Regular | Banned
  deriving (Eq, Show)
@@ -45,7 +45,7 @@ login :: User -> Password -> String
 login user enteredPass = if getPass user == enteredPass
 						then "You are logged in"
 						else "Incorrect Password"
-						
+
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
 
@@ -59,44 +59,62 @@ addUser u (listOfUsers)  = listOfUsers ++ [u]
 
 
 
-data Value
-  = Lit         Int     
-  | Text        String  
-  | B           AuthBool
-  |	Error
- deriving (Show)
-
 data Expr
-  = Add         Value Value   --Should this be changed?
-  | Sub         Value Value
-  | Mul         Value Value
-  | If          Value Expr Expr  -- ??
+  = Add         Expr Expr   --Should this be changed?
+  | Sub         Expr Expr
+  | Mul         Expr Expr
+  | If          Expr Expr Expr  -- ??
   | Def  --     ??????????
   | Ref  --     ??????????
   | Func --     ??????????
-  | While       Expr Expr
---  | 
+  | While       Test Expr
+  | Begin [Expr]
+  | Lit         Int
+  | Text        String
+  | B           AuthBool
+  |	Error
+  deriving (Eq,Show)
+
+
+--  |
 -- | Login       User Password
 --  | CreateUser  Name Password Permission
 
 
 
 
+-- | Valuation function for statements.
+stmt :: Expr -> Int
+stmt (While c b)  = if test c  then stmt (While c b) else 0
+stmt (Begin ss)   = stmts ss 5  -- foldl (flip stmt) s ss
+  where
+    stmts []     r = r
+    stmts (s:ss)  r= stmts ss (stmt s)
 
 -- Should Core features all be in Expr
 
--- IfStmt :: Expr -- -- -> -- Nothing ???  
+-- IfStmt :: Expr -- -- -> -- Nothing ???
 -- If ( (B Granted) tc fc) = tc
 
 
 -- sem :: Expr -> Value
--- sem (Add (Lit x) (Lit y)) = (Lit (x + y)) 
+-- sem (Add (Lit x) (Lit y)) = (Lit (x + y))
 -- sem (Add (_) (_)) = Error
 
 -- sem Login (Info (name,password) permlevel) givenPassword  = Error
+expr :: Expr  -> Int
+expr (Lit i)    = i
+expr (Add l r)  = expr l  + expr r
 
+data Test
+   = LTE_ Expr Expr
+   | LT_ Expr Expr
+   | GT_ Expr Expr
+   | GTE_ Expr Expr
+  deriving (Eq,Show)
 
-
-
-
-
+test :: Test -> Bool
+test (LTE_ l r) = expr l <= expr r
+test (LT_ l r) = expr l < expr r
+test (GT_ l r) = expr l > expr r
+test (GTE_ l r) = expr l >= expr r
