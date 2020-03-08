@@ -64,6 +64,8 @@ data Expr
   | Sub         Expr Expr
   | Mul         Expr Expr
   | If          Expr Expr Expr  -- ??
+  | Get
+  | Set         Expr
   | Def  --     ??????????
   | Ref  --     ??????????
   | Func --     ??????????
@@ -80,16 +82,23 @@ data Expr
 -- | Login       User Password
 --  | CreateUser  Name Password Permission
 
-
-
+type Reg = Int
+p :: Expr
+p = Begin
+      [ Set (Lit 1)
+      , While (LT_ Get (Lit 5))
+          (Set (Add Get (Lit 1)))
+      ]
 
 -- | Valuation function for statements.
-stmt :: Expr -> Int
-stmt (While c b)  = if test c  then stmt (While c b) else 0
-stmt (Begin ss)   = stmts ss 5  -- foldl (flip stmt) s ss
+stmt :: Expr -> Reg -> Int
+stmt (Set e) r = expr e r
+stmt (Sub l r) r1 = expr l r1 - expr r r1
+stmt (While c b)  r = if test c r  then stmt (While c b) (stmt b r) else r
+stmt (Begin ss)  r = stmts ss r
   where
     stmts []     r = r
-    stmts (s:ss)  r= stmts ss (stmt s)
+    stmts (s:ss)  r= stmts ss (stmt s r)
 
 -- Should Core features all be in Expr
 
@@ -102,9 +111,10 @@ stmt (Begin ss)   = stmts ss 5  -- foldl (flip stmt) s ss
 -- sem (Add (_) (_)) = Error
 
 -- sem Login (Info (name,password) permlevel) givenPassword  = Error
-expr :: Expr  -> Int
-expr (Lit i)    = i
-expr (Add l r)  = expr l  + expr r
+expr :: Expr -> Reg -> Int
+expr (Get)     s = s
+expr (Lit i)   s = i
+expr (Add l r) s = expr l s  + expr r s
 
 data Test
    = LTE_ Expr Expr
@@ -113,8 +123,8 @@ data Test
    | GTE_ Expr Expr
   deriving (Eq,Show)
 
-test :: Test -> Bool
-test (LTE_ l r) = expr l <= expr r
-test (LT_ l r) = expr l < expr r
-test (GT_ l r) = expr l > expr r
-test (GTE_ l r) = expr l >= expr r
+test :: Test -> Reg -> Bool
+test (LTE_ l r) s = expr l s <= expr r s
+test (LT_ l r) s = expr l  s < expr r s
+test (GT_ l r) s = expr l s > expr r s
+test (GTE_ l r) s = expr l s >= expr r s
