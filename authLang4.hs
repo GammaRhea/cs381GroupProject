@@ -57,6 +57,7 @@ getPerm (Info(_,_, perm,_)) = perm
 
 -- | Functions, "SET *This" functions -- maybe used in the "CreateUser" function
 -- | Set User's Name
+{- 
 setName :: Name -> User  -> User
 setName name (u)= u(Info(name, _,_,_))
 
@@ -67,7 +68,7 @@ setPass pass (u)= u(Info(_,pass,_,_))
 -- | Set User's Permission
 setPerm :: Permission -> User -> User
 setPerm perm (u) = u(Info(_,_, perm,_))
-
+-}
 
 -- | Add a user to the global list, "listOfUsers"              -- idk how to make it so the global listOfUsers stays updated...
 addUser :: User -> (UserEnv listOfUsers) -> (UserEnv listOfUsers)
