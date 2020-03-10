@@ -109,10 +109,10 @@ data Expr
   | If          Expr Expr Expr  -- ??
   | Get
   | Set         Expr  -- x - This should be compartmentalized, and with two arguments atleast.
-  | Let               -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
-  | Ref               -- This is for our language's variable reference ??????????
-  | Func              -- This anonymous function with arguments "Lit" and "Expr"  ??????????
-  | App               -- This is the function application
+  | Let         Lit Expr Expr      -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
+  | Ref         Lit      -- This is for our language's variable reference ??????????
+  | Func        Lit Expr      -- This anonymous function with arguments "Lit" and "Expr"  ??????????
+  | App         Expr Expr      -- This is the function application
   | While       Test Expr
   | Begin [Expr]
   | Tuple Expr Expr  -- x - This is the tuple implementation for AuthLang, even though the users are defined as a Tuple above(ex. line 30) in Haskell
