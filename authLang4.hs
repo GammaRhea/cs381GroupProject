@@ -85,7 +85,7 @@ addUser u (listOfUsers)  = listOfUsers ++ [u]
 login :: User -> Password -> String
 login user enteredPass = if getPass user == enteredPass
                         then "You are logged in"
-       				 else "Incorrect Password"
+                        else "Incorrect Password"
 
 
 
