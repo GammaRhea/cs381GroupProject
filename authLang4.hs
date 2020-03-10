@@ -115,12 +115,12 @@ data Expr
   | Func        Lit Expr      -- This anonymous function with arguments "Lit" and "Expr"  ??????????
   | App         Expr Expr      -- This is the function application
   | While       Test Expr
-  | Begin [Expr]
-  | Tuple Expr Expr  -- x - This is the tuple implementation for AuthLang, even though the users are defined as a Tuple above(ex. line 30) in Haskell
+  | Begin       [Expr]
+  | Tuple       Expr Expr  -- x - This is the tuple implementation for AuthLang, even though the users are defined as a Tuple above(ex. line 30) in Haskell
   | Lit         Int
   | Text        String
   | B           AuthBool
-  |    Error
+  | Error
   deriving (Eq,Show)
 
 
@@ -177,4 +177,51 @@ test (LTE_ l r) s = expr l s <= expr r s
 test (LT_ l r) s = expr l  s < expr r s
 test (GT_ l r) s = expr l s > expr r s
 test (GTE_ l r) s = expr l s >= expr r s
+
+add :: Expr -> Expr
+add (Add (Lit x) (Lit y)) = Lit (x + y)
+add (Add (_) (_)) = Error
+add _ = Error
+
+sub :: Expr -> Expr
+sub (Sub (Lit x) (Lit y)) = Lit (x - y)
+sub (Sub (_) (_)) = Error
+sub _ = Error
+
+mul :: Expr -> Expr
+mul (Mul (Lit x) (Lit y)) = Lit (x * y)
+mul (Mul (_) (_)) = Error
+mul _ = Error
+
+
+ifStmt :: Expr -> Expr
+ifStmt (If (B Granted) (y) (z))  = y
+ifStmt (If (B Denied) (y) (z))  = z
+ifStmt (If (_) (y) (z))  = Error
+ifStmt _ = Error
+
+ifEx1 = ifStmt (If(B Granted) (Text "This should print") (Text "this should not print"))
+ifEx2 = ifStmt (If(B Denied)  (Text "This shouldn't print") (Text "this FALSE text should  print"))
+ifEx3 = ifStmt (If(B Granted) (add (Add(Lit 5)(Lit 10))) (Text "This shouldn't print"))  -- Lit 15 should display
+ifEx4 = ifStmt (If(B Denied)  (Text "This shouldn't print") (sub (Sub(Lit 100)(Lit 100))))  -- Lit 0 should display
+ifExErr = ifStmt (If(Text "this isn't a bool") (Text "QWERTY") (Text "ASDFG"))
+
+tuple :: Expr -> (Expr, Expr)
+tuple (Tuple x y) = (x,y)
+tupple (_) = Error
+
+tupEx1 = tuple (Tuple (Text "a") (Lit 7))
+
+getFirstVal :: (Expr, Expr) -> Expr
+getFirstVal    (x,y) = x
+
+getSecondVal :: (Expr, Expr) -> Expr
+getSecondVal    (x,y) = y
+
+invertEx1 = getFirstVal tupEx1
+invertEx2 = getSecondVal tupEx1
+
+
+
+
 
