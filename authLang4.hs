@@ -56,7 +56,7 @@ getPerm (Info(_,_, perm,_)) = perm
 
 -- | Functions, "SET *This" functions -- maybe used in the "CreateUser" function
 -- | Set User's Name
-{- 
+{-
 setName :: Name -> User  -> User
 setName name (u)= u(Info(name, _,_,_))
 
@@ -71,7 +71,7 @@ setPerm perm (u) = u(Info(_,_, perm,_))
 
 
 
--- | Add a user to the global list, "listOfUsers"  
+-- | Add a user to the global list, "listOfUsers"
 addUser :: User -> (UserEnv listOfUsers) -> (UserEnv listOfUsers)
 addUser u (listOfUsers) = listOfUsers ++ [u]
 
@@ -91,6 +91,41 @@ refEx3 = getPass (getUser "Connor G" listOfUsers)
 
 
 
+-- let x = 2+3 in (let y = x+4 in x+y)  ==>  14
+ex69 = Let "x" (Add (Lit 2) (Lit 3))
+              (Let "x" (Add (Ref "x") (Lit 4))
+                       (Add (Ref "x") (Ref "x")))
+
+-- * Environments
+-- probably will be a list of actions or users???? something like that.
+
+type Env = String -> Maybe Int
+
+empty :: Env
+empty = \_ -> Nothing
+
+get :: String -> Env -> Maybe Int
+get x m = m x
+
+set :: String -> Int -> Env -> Env
+set x i m = \y -> if y == x then Just i else m y
+
+exEnv :: Env
+exEnv = (set "a" 3 . set "b" 4 . set "c" 5) empty
+
+
+-- * Denotational semantics
+
+sem :: Expr -> Env -> Maybe Int
+sem (Lit i)     m = Just i
+sem (Add l r)   m = case (sem l m, sem r m) of
+                      (Just i, Just j) -> Just (i+j)
+                      _ -> Nothing
+sem (Let x b e) m = case sem b m of
+                      Just i -> sem e (set x i m)
+                      Nothing -> Nothing
+sem (Ref x)     m = get x m
+
 -- This function takes in runtime user input, creates a new user, and adds them to the list.
 -- CreateUser :: Name -> Password -> Permission -> User
 -- CreateUser n p per u = u(n,p,per)
@@ -104,8 +139,8 @@ login user enteredPass = if getPass user == enteredPass
                         then "You are logged in"
                         else "Incorrect Password"
 
-						
-						
+
+
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -127,8 +162,8 @@ data Expr
   | If          Expr Expr Expr  -- ??
   | Get
   | Set         Expr  -- x - This should be compartmentalized, and with two arguments atleast.
-  | Let         Lit Expr Expr      -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
-  | Ref         Lit      -- This is for our language's variable reference ??????????
+  | Let String Expr Expr
+  | Ref String    -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
   | Func        Lit Expr      -- This anonymous function with arguments "Lit" and "Expr"  ??????????
   | App         Expr Expr      -- This is the function application
   | While       Test Expr
@@ -146,7 +181,7 @@ data Expr
 -- | Login       User Password
 
 -- | Below is redundant with the type "Lit", It maybe separated if it is of syntaxical/semantical importance
-type Reg = Int  
+type Reg = Int
 -- | Below the "Reg" will be replaced with "Lit"  --3/9/2020 - Is this too confusing for our program understanding?
 
 p :: Expr
@@ -238,11 +273,11 @@ invertEx1 = getFirstVal tupEx1
 invertEx2 = getSecondVal tupEx1
 
 append :: Int -> [Int] -> [Int]
-append i [] = [i] 
+append i [] = [i]
 append i (x:xs) = (x:xs) ++ [i]
 
 prepend :: Int -> [Int] -> [Int]
-prepend i [] = [i] 
+prepend i [] = [i]
 prepend i (x:xs) = [i] ++ (x:xs)
 
 -- Adds a constant value to every number in a list
@@ -253,20 +288,4 @@ addToAll i (x:xs) = [(x+i)] ++ addToAll i xs
 -- addLists :: [Int] -> [Int] -> [Int]
 -- addLists [] [] = []
 -- addLists [] (x:xs) = (x:xs)
--- addLists (x:xs) (y:ys) = [x+y] ++ addLists 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- addLists (x:xs) (y:ys) = [x+y] ++ addLists
