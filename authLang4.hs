@@ -197,15 +197,15 @@ stmt (Begin ss)  r = stmts ss r
 
 -- IfStmt :: Expr -- -- -> -- Nothing ???
 -- If ( (B Granted) tc fc) = tc
--- data Action = Login | Read_Tree
--- -- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
--- -- Info (Name, Password, Permission, LoggedIn)
--- program :: Action -> User -> AuthBool
--- program Login (Info ( _ _ Admin _ )) = Granted
--- program Login (Info ( _ _ Regular _ )) = Granted
--- program Login (Info ( _ _ Banned _ )) = Denied
--- program Read_Tree (Info ( _ _ Admin _ )) = Granted -- later can make it show it actually displays Tree if granted (could use case of)
--- program Read_Tree (Info ( _ _ Admin _ )) = Denied
+data Action = Login | Read_Tree
+-- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
+-- Info (Name, Password, Permission, LoggedIn)
+program :: Action -> User -> AuthBool
+program Login (Info ( _, _, Admin, _ )) = Granted
+program Login (Info ( _ ,_ ,Regular, _ )) = Granted
+program Login (Info ( _, _, Banned, _ )) = Denied
+program Read_Tree (Info ( _, _, Admin, _ )) = Granted -- later can make it show it actually displays Tree if granted (could use case of)
+program Read_Tree (Info ( _, _, _, _ )) = Denied
 
 
 -- sem :: Expr -> Value
