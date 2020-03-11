@@ -87,8 +87,8 @@ login user enteredPass = if getPass user == enteredPass
                         then "You are logged in"
                         else "Incorrect Password"
 
-
-
+						
+						
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -148,6 +148,7 @@ stmt (Begin ss)  r = stmts ss r
   where
     stmts []     r = r
     stmts (s:ss)  r= stmts ss (stmt s r)
+
 
 -- Should Core features all be in Expr
 
@@ -220,6 +221,27 @@ getSecondVal    (x,y) = y
 
 invertEx1 = getFirstVal tupEx1
 invertEx2 = getSecondVal tupEx1
+
+
+append :: Int -> [Int] -> [Int]
+append i [] = [i] 
+append i (x:xs) = (x:xs) ++ [i]
+
+prepend :: Int -> [Int] -> [Int]
+prepend i [] = [i] 
+prepend i (x:xs) = [i] ++ (x:xs)
+
+-- Adds a constant value to every number in a list
+addToAll :: Int -> [Int] -> [Int]
+addToAll i [] = []
+addToAll i (x:xs) = [(x+i)] ++ addToAll i xs
+
+addLists :: [Int] -> [Int] -> [Int]
+addLists [] [] = []
+addLists [] (x:xs) = (x:xs)
+addLists (x:xs) (y:ys) = [x+y] ++ addLists xs ys
+
+
 
 
 
