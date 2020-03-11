@@ -21,7 +21,6 @@ data User         =  Info (Name, Password, Permission, LoggedIn)
 data Permission   = Admin | Regular | Banned
  deriving (Eq, Show)
 
-
 data AuthBool     = Granted | Denied
   deriving (Eq,Show)
 
@@ -70,9 +69,27 @@ setPerm :: Permission -> User -> User
 setPerm perm (u) = u(Info(_,_, perm,_))
 -}
 
--- | Add a user to the global list, "listOfUsers"              -- idk how to make it so the global listOfUsers stays updated...
+
+
+-- | Add a user to the global list, "listOfUsers"  
 addUser :: User -> (UserEnv listOfUsers) -> (UserEnv listOfUsers)
-addUser u (listOfUsers)  = listOfUsers ++ [u]
+addUser u (listOfUsers) = listOfUsers ++ [u]
+
+-- Adding Variables example
+varEx1 = listOfUsers
+varEx2 = addUser (Info("Test User", "Password123",Admin, False)) listOfUsers
+
+-- Refering to Variables
+-- Give the name return the User's information
+getUser :: String -> (UserEnv listOfUsers) -> User
+getUser name(Info(n,p,perm,logged):xs) = if name == n then (Info(n,p,perm,logged)) else getUser name xs
+
+-- Referencing Variables:
+refEx1 = getUser "Connor G" listOfUsers
+refEx2 = getUser "Test User" varEx2
+refEx3 = getPass (getUser "Connor G" listOfUsers)
+
+
 
 -- This function takes in runtime user input, creates a new user, and adds them to the list.
 -- CreateUser :: Name -> Password -> Permission -> User
@@ -149,7 +166,6 @@ stmt (Begin ss)  r = stmts ss r
     stmts []     r = r
     stmts (s:ss)  r= stmts ss (stmt s r)
 
-
 -- Should Core features all be in Expr
 
 -- IfStmt :: Expr -- -- -> -- Nothing ???
@@ -194,7 +210,6 @@ mul (Mul (Lit x) (Lit y)) = Lit (x * y)
 mul (Mul (_) (_)) = Error
 mul _ = Error
 
-
 ifStmt :: Expr -> Expr
 ifStmt (If (B Granted) (y) (z))  = y
 ifStmt (If (B Denied) (y) (z))  = z
@@ -222,7 +237,6 @@ getSecondVal    (x,y) = y
 invertEx1 = getFirstVal tupEx1
 invertEx2 = getSecondVal tupEx1
 
-
 append :: Int -> [Int] -> [Int]
 append i [] = [i] 
 append i (x:xs) = (x:xs) ++ [i]
@@ -236,10 +250,19 @@ addToAll :: Int -> [Int] -> [Int]
 addToAll i [] = []
 addToAll i (x:xs) = [(x+i)] ++ addToAll i xs
 
-addLists :: [Int] -> [Int] -> [Int]
-addLists [] [] = []
-addLists [] (x:xs) = (x:xs)
-addLists (x:xs) (y:ys) = [x+y] ++ addLists xs ys
+-- addLists :: [Int] -> [Int] -> [Int]
+-- addLists [] [] = []
+-- addLists [] (x:xs) = (x:xs)
+-- addLists (x:xs) (y:ys) = [x+y] ++ addLists 
+
+
+
+
+
+
+
+
+
 
 
 
