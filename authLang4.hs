@@ -132,7 +132,7 @@ login :: User -> Password -> String
 login user enteredPass = if getPass user == enteredPass
                          then "You are logged in"
                          else "Incorrect Password"
-						
+
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -149,6 +149,7 @@ ex4 = login tim "asdfasdf"
 
 data Expr
   = Add         Expr Expr   -- x - Should this be changed? -- No, I believe this should not change, if we want to compute expressions dynamically
+  | CreateUser User
   | Sub         Expr Expr
   | Mul         Expr Expr
   | If          Expr Expr Expr  -- ??
@@ -196,6 +197,15 @@ stmt (Begin ss)  r = stmts ss r
 
 -- IfStmt :: Expr -- -- -> -- Nothing ???
 -- If ( (B Granted) tc fc) = tc
+-- data Action = Login | Read_Tree
+-- -- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
+-- -- Info (Name, Password, Permission, LoggedIn)
+-- program :: Action -> User -> AuthBool
+-- program Login (Info ( _ _ Admin _ )) = Granted
+-- program Login (Info ( _ _ Regular _ )) = Granted
+-- program Login (Info ( _ _ Banned _ )) = Denied
+-- program Read_Tree (Info ( _ _ Admin _ )) = Granted -- later can make it show it actually displays Tree if granted (could use case of)
+-- program Read_Tree (Info ( _ _ Admin _ )) = Denied
 
 
 -- sem :: Expr -> Value
@@ -299,11 +309,3 @@ dec _ = Error
 
 incEx1 = (inc (Lit 5))
 decEx1 = (dec (Lit 70))
-
-
-
-
-
-
-
-
