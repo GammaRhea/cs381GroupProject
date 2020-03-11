@@ -69,8 +69,6 @@ setPerm :: Permission -> User -> User
 setPerm perm (u) = u(Info(_,_, perm,_))
 -}
 
-
-
 -- | Add a user to the global list, "listOfUsers"
 addUser :: User -> (UserEnv listOfUsers) -> (UserEnv listOfUsers)
 addUser u (listOfUsers) = listOfUsers ++ [u]
@@ -88,8 +86,6 @@ getUser name(Info(n,p,perm,logged):xs) = if name == n then (Info(n,p,perm,logged
 refEx1 = getUser "Connor G" listOfUsers
 refEx2 = getUser "Test User" varEx2
 refEx3 = getPass (getUser "Connor G" listOfUsers)
-
-
 
 -- let x = 2+3 in (let y = x+4 in x+y)  ==>  14
 ex69 = Let "x" (Add (Lit 2) (Lit 3))
@@ -113,9 +109,7 @@ set x i m = \y -> if y == x then Just i else m y
 exEnv :: Env
 exEnv = (set "a" 3 . set "b" 4 . set "c" 5) empty
 
-
 -- * Denotational semantics
-
 sem :: Expr -> Env -> Maybe Int
 sem (Lit i)     m = Just i
 sem (Add l r)   m = case (sem l m, sem r m) of
@@ -136,11 +130,9 @@ sem (Ref x)     m = get x m
 -- this will be called after a "CreateUser" and "addUser"
 login :: User -> Password -> String
 login user enteredPass = if getPass user == enteredPass
-                        then "You are logged in"
-                        else "Incorrect Password"
-
-
-
+                         then "You are logged in"
+                         else "Incorrect Password"
+						
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -162,8 +154,8 @@ data Expr
   | If          Expr Expr Expr  -- ??
   | Get
   | Set         Expr  -- x - This should be compartmentalized, and with two arguments atleast.
-  | Let String Expr Expr
-  | Ref String    -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
+  | Let         String Expr Expr
+  | Ref         String    -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
   | Func        Lit Expr      -- This anonymous function with arguments "Lit" and "Expr"  ??????????
   | App         Expr Expr      -- This is the function application
   | While       Test Expr
@@ -174,7 +166,6 @@ data Expr
   | B           AuthBool
   | Error
   deriving (Eq,Show)
-
 
 -- | Swapped oderd
 -- | CreateUser  Name Password Permission
@@ -257,12 +248,17 @@ ifEx3 = ifStmt (If(B Granted) (add (Add(Lit 5)(Lit 10))) (Text "This shouldn't p
 ifEx4 = ifStmt (If(B Denied)  (Text "This shouldn't print") (sub (Sub(Lit 100)(Lit 100))))  -- Lit 0 should display
 ifExErr = ifStmt (If(Text "this isn't a bool") (Text "QWERTY") (Text "ASDFG"))
 
+
+
+-- Tuple Creation
 tuple :: Expr -> (Expr, Expr)
 tuple (Tuple x y) = (x,y)
 tupple (_) = Error
 
 tupEx1 = tuple (Tuple (Text "a") (Lit 7))
 
+
+-- Tuple Operations (Invertibility)
 getFirstVal :: (Expr, Expr) -> Expr
 getFirstVal    (x,y) = x
 
@@ -272,6 +268,7 @@ getSecondVal    (x,y) = y
 invertEx1 = getFirstVal tupEx1
 invertEx2 = getSecondVal tupEx1
 
+-- List Operations
 append :: Int -> [Int] -> [Int]
 append i [] = [i]
 append i (x:xs) = (x:xs) ++ [i]
@@ -285,7 +282,28 @@ addToAll :: Int -> [Int] -> [Int]
 addToAll i [] = []
 addToAll i (x:xs) = [(x+i)] ++ addToAll i xs
 
--- addLists :: [Int] -> [Int] -> [Int]
--- addLists [] [] = []
--- addLists [] (x:xs) = (x:xs)
--- addLists (x:xs) (y:ys) = [x+y] ++ addLists
+-- Add two lists together
+addLists :: [Int] -> [Int] -> [Int]
+addLists [] [] = []
+addLists [] (x:xs) = (x:xs)
+addLists (x:xs) (y:ys) = [x+y] ++ addLists xs ys
+
+-- Syntactic Sugar!
+inc :: Expr -> Expr
+inc (Lit x) = add(Add (Lit x) (Lit 1))
+inc _ = Error
+
+dec :: Expr -> Expr
+dec (Lit x) = sub(Sub (Lit x) (Lit 1))
+dec _ = Error
+
+incEx1 = (inc (Lit 5))
+decEx1 = (dec (Lit 70))
+
+
+
+
+
+
+
+
