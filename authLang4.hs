@@ -279,6 +279,7 @@ add (Add (_) (_)) = Error
 add _ = Error
 
 addEx = add(Add(Lit 7) ((Lit 8)))
+addEx2 = add(Add(addEx) ((Lit 8)))
 
 sub :: Expr -> Expr
 sub (Sub (Lit x) (Lit y)) = Lit (x - y)
