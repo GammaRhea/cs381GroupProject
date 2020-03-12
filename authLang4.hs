@@ -116,16 +116,16 @@ set x i m = \y -> if y == x then Just i else m y
 exEnv :: Env
 exEnv = (set "a" 3 . set "b" 4 . set "c" 5) empty
 
--- * Denotational semantics
-sem :: Expr -> Env -> Maybe Int
-sem (Lit i)     m = Just i
-sem (Add l r)   m = case (sem l m, sem r m) of
-                      (Just i, Just j) -> Just (i+j)
-                      _ -> Nothing
-sem (Let x b e) m = case sem b m of
-                      Just i -> sem e (set x i m)
-                      Nothing -> Nothing
-sem (Ref x)     m = get x m
+-- -- * Denotational semantics
+-- sem :: Expr -> Env -> Maybe Int
+-- sem (Lit i)     m = Just i
+-- sem (Add l r)   m = case (sem l m, sem r m) of
+--                       (Just i, Just j) -> Just (i+j)
+--                       _ -> Nothing
+-- sem (Let x b e) m = case sem b m of
+--                       Just i -> sem e (set x i m)
+--                       Nothing -> Nothing
+-- sem (Ref x)     m = get x m
 
 -- This function takes in runtime user input, creates a new user, and adds them to the list.
 -- CreateUser :: Name -> Password -> Permission -> User
@@ -170,14 +170,6 @@ data Expr
   | Error
   deriving (Eq,Show)
 
--- | Swapped oderd
--- | CreateUser  Name Password Permission
--- | Login       User Password
-
--- | Below is redundant with the type "Lit", It maybe separated if it is of syntaxical/semantical importance
-type Reg = Int
--- | Below the "Reg" will be replaced with "Lit"  --3/9/2020 - Is this too confusing for our program understanding?
-
 -- p :: Expr
 -- p = Begin
 --       [ Set (Lit 1)
@@ -185,12 +177,26 @@ type Reg = Int
 --           (Set (Add Get (Lit 1)))
 --       ]
 
--- Info (Name, Password, Permission, LoggedIn)
+-- | Below is redundant with the type "Lit", It maybe separated if it is of syntaxical/semantical importance
+type Reg = Int
+-- | Below the "Reg" will be replaced with "Lit"  --3/9/2020 - Is this too confusing for our program understanding?
+
+-- data User         =  Info (Name, Password, Permission, LoggedIn)
+
+-- for login sake both admin and regular are the same
 login :: User -> Password -> Expr
-login user enteredPass = if getPass user == enteredPass
-	                     then B Granted
-                         else B Denied
-						 
+
+login (Info (_, pass, Banned, _)) enteredPass = B Denied
+login (Info (a, pass, b, c)) enteredPass = if getPass (Info (a,pass,b,c)) == enteredPass
+  then B Granted
+  else B Denied
+
+ifStmt :: Expr -> Expr
+ifStmt (If (B Granted) (y) (z))  = y
+ifStmt (If (B Denied) (y) (z))  = z
+ifStmt (If (_) (y) (z))  = Error
+ifStmt _ = Error
+
 loginIfEx1 = (ifStmt (If(login connor "Hunter2")(Text "You are logged in")(Text "You are not logged in :(")))
 loginIfEx2 = (ifStmt (If(login connor "Hunter2")(add (Add (Lit 5)(Lit 7)))(Text "You are not logged in :(")))
 
@@ -201,7 +207,7 @@ data TestUser
   deriving (Eq,Show)
 
 test'o :: TestUser -> Expr
-test'o (LoginT u s) = B Granted
+test'o (LoginT u s) = login u s
 test'o (ActionT u s) = B Granted
 
 converttobool :: Expr -> Bool
@@ -283,12 +289,6 @@ mul :: Expr -> Expr
 mul (Mul (Lit x) (Lit y)) = Lit (x * y)
 mul (Mul (_) (_)) = Error
 mul _ = Error
-
-ifStmt :: Expr -> Expr
-ifStmt (If (B Granted) (y) (z))  = y
-ifStmt (If (B Denied) (y) (z))  = z
-ifStmt (If (_) (y) (z))  = Error
-ifStmt _ = Error
 
 ifEx1 = ifStmt (If(B Granted) (Text "This should print") (Text "this should not print"))
 ifEx2 = ifStmt (If(B Denied)  (Text "This shouldn't print") (Text "this FALSE text should  print"))
