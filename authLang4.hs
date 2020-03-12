@@ -46,13 +46,20 @@ listOfUsers = [(connor), (bob), (tim)] -- | A.H. Comment, should this be a list 
 getName :: User -> Name
 getName (Info(name, _,_,_)) = name
 
+getNameEx = getName connor
+
 -- | Get User's Password
 getPass :: User -> Password
 getPass (Info(_,pass,_,_)) = pass
 
+getPassEx = getPass bob
+
 -- | Get User's Permission
 getPerm :: User -> Permission
 getPerm (Info(_,_, perm,_)) = perm
+
+getPermEx = getPerm tim
+
 
 -- | Functions, "SET *This" functions -- maybe used in the "CreateUser" function
 -- | Set User's Name
@@ -261,6 +268,8 @@ add (Add (Lit x) (Lit y)) = Lit (x + y)
 add (Add (_) (_)) = Error
 add _ = Error
 
+addEx = add(Add(Lit 7) ((Lit 8)))
+
 sub :: Expr -> Expr
 sub (Sub (Lit x) (Lit y)) = Lit (x - y)
 sub (Sub (_) (_)) = Error
@@ -305,20 +314,30 @@ append :: Int -> [Int] -> [Int]
 append i [] = [i]
 append i (x:xs) = (x:xs) ++ [i]
 
+appendEx = append 7 [1,2,3,4]
+
+
 prepend :: Int -> [Int] -> [Int]
 prepend i [] = [i]
 prepend i (x:xs) = [i] ++ (x:xs)
+
+prependEx = prepend 100 [10,20,30,90]
 
 -- Adds a constant value to every number in a list
 addToAll :: Int -> [Int] -> [Int]
 addToAll i [] = []
 addToAll i (x:xs) = [(x+i)] ++ addToAll i xs
 
+addToAllEx = addToAll 5 [1,2,3,4,5]
+
+
 -- Add two lists together
 addLists :: [Int] -> [Int] -> [Int]
 addLists [] [] = []
 addLists [] (x:xs) = (x:xs)
 addLists (x:xs) (y:ys) = [x+y] ++ addLists xs ys
+
+addListsEx = addLists [1,2,3] [10,11,12]
 
 -- Syntactic Sugar!
 inc :: Expr -> Expr
