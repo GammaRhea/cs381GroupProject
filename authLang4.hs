@@ -128,11 +128,7 @@ sem (Ref x)     m = get x m
 
 -- Login function to tell if a guest is a user,
 -- this will be called after a "CreateUser" and "addUser"
-login :: User -> Password -> Expr
-login user enteredPass = if getPass user == enteredPass
-                         then B Granted
-                         else B Denied
-						
+
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -158,7 +154,7 @@ data Expr
   | Ref         String    -- This is for variable binding, and allowing our users to create a function -- Changed "def" to "let"  ??????????
   | Func        Lit Expr      -- This anonymous function with arguments "Lit" and "Expr"  ??????????
   | App         Expr Expr      -- This is the function application
-  | While       Test Expr
+  | While       TestUser Expr
   | Begin       [Expr]
   | Tuple       Expr Expr  -- x - This is the tuple implementation for AuthLang, even though the users are defined as a Tuple above(ex. line 30) in Haskell
   | Lit         Int
@@ -175,37 +171,57 @@ data Expr
 type Reg = Int
 -- | Below the "Reg" will be replaced with "Lit"  --3/9/2020 - Is this too confusing for our program understanding?
 
-p :: Expr
-p = Begin
-      [ Set (Lit 1)
-      , While (LT_ Get (Lit 5))
-          (Set (Add Get (Lit 1)))
-      ]
+-- p :: Expr
+-- p = Begin
+--       [ Set (Lit 1)
+--       , While (LT_ Get (Lit 5))
+--           (Set (Add Get (Lit 1)))
+--       ]
 
-stmt1 :: Expr -> User -> Int
-stmt1 (Set e) r = expr e r
-stmt1 (Sub l r) r1 = expr l r1 - expr r r1
-stmt1 (While c b)  r = if test c r  then stmt1 (While c b) (stmt1 b r) else r
+-- Info (Name, Password, Permission, LoggedIn)
+login :: User -> Password -> Expr
+login user enteredPass = if getPass user == enteredPass
+  then B Granted
+  else B Denied
+
+data TestUser
+   = LoginT User String
+   | ActionT User String
+  deriving (Eq,Show)
+
+test'o :: TestUser -> Expr
+test'o (LoginT u s) = B Granted
+test'o (ActionT u s) = B Granted
+
+converttobool :: Expr -> Bool
+converttobool (B Granted) = True
+converttobool _ = False
+
+expr1 :: Expr -> User -> User
+expr1 (Get) n = n
+
+stmt1 :: Expr -> User -> User
+stmt1 (Set e) r = expr1 e r
+stmt1 (While texpr b)  r = if converttobool (test'o texpr) then stmt1 (While texpr b) (stmt1 b r) else r
 stmt1 (Begin ss)  r = stmts1 ss r
   where
     stmts1 []     r = r
     stmts1 (s:ss)  r= stmts1 ss (stmt1 s r)
 
--- | Valuation function for statements. --Changed REG to lit
-stmt :: Expr -> Reg -> Int
-stmt (Set e) r = expr e r
-stmt (Sub l r) r1 = expr l r1 - expr r r1
-stmt (While c b)  r = if test c r  then stmt (While c b) (stmt b r) else r
-stmt (Begin ss)  r = stmts ss r
-  where
-    stmts []     r = r
-    stmts (s:ss)  r= stmts ss (stmt s r)
-
--- Should Core features all be in Expr
+-- -- | Valuation function for statements. --Changed REG to lit
+-- stmt :: Expr -> Reg -> Int
+-- stmt (Set e) r = expr e r
+-- stmt (Sub l r) r1 = expr l r1 - expr r r1
+-- stmt (While c b)  r = if test c r  then stmt (While c b) (stmt b r) else r
+-- stmt (Begin ss)  r = stmts ss r
+--   where
+--     stmts []     r = r
+--     stmts (s:ss)  r= stmts ss (stmt s r)
+--
+-- -- Should Core features all be in Expr
 
 -- IfStmt :: Expr -- -- -> -- Nothing ???
 -- If ( (B Granted) tc fc) = tc
-<<<<<<< HEAD
 data Action = Login | Read_Tree
 -- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
 -- Info (Name, Password, Permission, LoggedIn)
@@ -215,8 +231,6 @@ program Login (Info ( _ ,_ ,Regular, _ )) = Granted
 program Login (Info ( _, _, Banned, _ )) = Denied
 program Read_Tree (Info ( _, _, Admin, _ )) = Granted -- later can make it show it actually displays Tree if granted (could use case of)
 program Read_Tree (Info ( _, _, _, _ )) = Denied
-=======
->>>>>>> 772cb4532b2a4d99cddc5e83e8775aa02f68d39e
 
 
 -- sem :: Expr -> Value
@@ -335,14 +349,14 @@ andEx3 = and' (Text "test") (B Granted)
 or' :: Expr -> Expr -> Expr
 or' (B Granted) (B _) = (B Granted)
 or' (B _) (B Granted) = (B Granted)
-or' (B _)    (B _)    = (B Denied )    
+or' (B _)    (B _)    = (B Denied )
 or' _ _               = Error
 
 orEx1 = or' (B Granted) (B Denied)
 orEx2 = or' (B Granted) (B Granted)
 orEx3 = or' (B Granted) (Text "asdf")
 
-not' :: Expr -> Expr 
+not' :: Expr -> Expr
 not' (B Granted) = (B Denied)
 not' (B Denied)  = (B Granted)
 not' _           = Error
@@ -353,12 +367,6 @@ notEx3 = not' (Lit 7)
 
 
 
--- type funcEnv m = [ [Expr] ] 
--- m = [ [] ] 
+-- type funcEnv m = [ [Expr] ]
+-- m = [ [] ]
  -- defFunc :: String -> [Expr]
-
-
-
-
-
-
