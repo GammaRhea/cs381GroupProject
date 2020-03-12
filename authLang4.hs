@@ -188,8 +188,12 @@ type Reg = Int
 -- Info (Name, Password, Permission, LoggedIn)
 login :: User -> Password -> Expr
 login user enteredPass = if getPass user == enteredPass
-  then B Granted
-  else B Denied
+	                     then B Granted
+                         else B Denied
+						 
+loginIfEx1 = (ifStmt (If(login connor "Hunter2")(Text "You are logged in")(Text "You are not logged in :(")))
+loginIfEx2 = (ifStmt (If(login connor "Hunter2")(add (Add (Lit 5)(Lit 7)))(Text "You are not logged in :(")))
+
 
 data TestUser
    = LoginT User String
