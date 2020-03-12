@@ -128,11 +128,11 @@ sem (Ref x)     m = get x m
 
 -- Login function to tell if a guest is a user,
 -- this will be called after a "CreateUser" and "addUser"
-login :: User -> Password -> String
+login :: User -> Password -> Expr
 login user enteredPass = if getPass user == enteredPass
-                         then "You are logged in"
-                         else "Incorrect Password"
-
+                         then B Granted
+                         else B Denied
+						
 -- | Start of 2nd Static Examples, for testing.
 ex1 = login connor "Hunter2"
 ex2 = login connor "ASDFASDf"
@@ -149,7 +149,6 @@ ex4 = login tim "asdfasdf"
 
 data Expr
   = Add         Expr Expr   -- x - Should this be changed? -- No, I believe this should not change, if we want to compute expressions dynamically
-  | CreateUser User
   | Sub         Expr Expr
   | Mul         Expr Expr
   | If          Expr Expr Expr  -- ??
@@ -197,15 +196,6 @@ stmt (Begin ss)  r = stmts ss r
 
 -- IfStmt :: Expr -- -- -> -- Nothing ???
 -- If ( (B Granted) tc fc) = tc
--- data Action = Login | Read_Tree
--- -- Can later add arguments to the actions so they actually do something ex: Login | Read_Tree Tree_Name | Make_Tree (Tree)
--- -- Info (Name, Password, Permission, LoggedIn)
--- program :: Action -> User -> AuthBool
--- program Login (Info ( _ _ Admin _ )) = Granted
--- program Login (Info ( _ _ Regular _ )) = Granted
--- program Login (Info ( _ _ Banned _ )) = Denied
--- program Read_Tree (Info ( _ _ Admin _ )) = Granted -- later can make it show it actually displays Tree if granted (could use case of)
--- program Read_Tree (Info ( _ _ Admin _ )) = Denied
 
 
 -- sem :: Expr -> Value
@@ -258,15 +248,12 @@ ifEx3 = ifStmt (If(B Granted) (add (Add(Lit 5)(Lit 10))) (Text "This shouldn't p
 ifEx4 = ifStmt (If(B Denied)  (Text "This shouldn't print") (sub (Sub(Lit 100)(Lit 100))))  -- Lit 0 should display
 ifExErr = ifStmt (If(Text "this isn't a bool") (Text "QWERTY") (Text "ASDFG"))
 
-
-
 -- Tuple Creation
 tuple :: Expr -> (Expr, Expr)
 tuple (Tuple x y) = (x,y)
 tupple (_) = Error
 
-tupEx1 = tuple (Tuple (Text "a") (Lit 7))
-
+tupEx1 = tuple(Tuple (Text "a") (Lit 7))
 
 -- Tuple Operations (Invertibility)
 getFirstVal :: (Expr, Expr) -> Expr
@@ -309,3 +296,48 @@ dec _ = Error
 
 incEx1 = (inc (Lit 5))
 decEx1 = (dec (Lit 70))
+
+
+
+-- Boolean Operations
+and' :: Expr -> Expr -> Expr
+and' ( B Granted) (B Granted) = (B Granted)
+and' (B _ )        (B _)      = (B Denied)
+and'   _             _        = Error
+
+andEx1 = and' (B Granted) (B Granted)
+andEx2 = and' (B Granted) (B Denied)
+andEx3 = and' (Text "test") (B Granted)
+
+
+
+or' :: Expr -> Expr -> Expr
+or' (B Granted) (B _) = (B Granted)
+or' (B _) (B Granted) = (B Granted)
+or' (B _)    (B _)    = (B Denied )    
+or' _ _               = Error
+
+orEx1 = or' (B Granted) (B Denied)
+orEx2 = or' (B Granted) (B Granted)
+orEx3 = or' (B Granted) (Text "asdf")
+
+not' :: Expr -> Expr 
+not' (B Granted) = (B Denied)
+not' (B Denied)  = (B Granted)
+not' _           = Error
+
+notEx1 = not' (B Granted)
+notEx2 = not' (B Denied)
+notEx3 = not' (Lit 7)
+
+
+
+-- type funcEnv m = [ [Expr] ] 
+-- m = [ [] ] 
+ -- defFunc :: String -> [Expr]
+
+
+
+
+
+
