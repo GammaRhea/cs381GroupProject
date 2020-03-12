@@ -183,6 +183,15 @@ p = Begin
           (Set (Add Get (Lit 1)))
       ]
 
+stmt1 :: Expr -> User -> Int
+stmt1 (Set e) r = expr e r
+stmt1 (Sub l r) r1 = expr l r1 - expr r r1
+stmt1 (While c b)  r = if test c r  then stmt1 (While c b) (stmt1 b r) else r
+stmt1 (Begin ss)  r = stmts1 ss r
+  where
+    stmts1 []     r = r
+    stmts1 (s:ss)  r= stmts1 ss (stmt1 s r)
+
 -- | Valuation function for statements. --Changed REG to lit
 stmt :: Expr -> Reg -> Int
 stmt (Set e) r = expr e r
