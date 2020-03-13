@@ -1,48 +1,57 @@
-# cs381GroupProject
-Group of   
-(Connor G: greenwac)  
-(Conner M: maddaloc)  
-(Conner R: rheac)  
-(Arman H: hastinar)  
+# CS 381 Group Project
+## The Team
+| Name  | ID |
+| ------------- | ------------- |
+| Connor G | greenwac  |
+|Conner M | maddaloc |
+| Conner R | rheac  |
+| Arman H | hastinar |
 
-Hello! And welcome to AuthLang, our language for the cs381 group project.
-AuthLang is a language specifically designed to emulate a login based system, where different users have
-different levels of permissions which determines which tasks they are allowed to run. Once completed, users will be
-able to login, run commands, and then logout once their session is done.
+## Introduction
+Hello! And welcome to AuthLang, our language for the cs381 group project. AuthLang is a language that allows for the creation and authentication of users with a password. Our language contains many different features which utilize whether or not the user has logged in. Once a user is in the system with permissions they may use this functional program to create variables to add and use together in various expressions.
 
-Instructions:
-Our program is inteded to run and compile withing ghci. In order to run it, simply go into ghci and
-:load authLang1.hs to get started with our language. We have written a number of examples detailing some of
-the basic functionality of our language. You can run them by typing ex1, ex2, ex11, ex100, etc... you can find a full list
-of commented examples within the code of the file authLang1.hs
+## Instructions 
+Our program is intended to run and compile within ghci. 
+In order to run it, simply go into ghci and :load authLang4.hs to get started with our language. We have written a many examples that demonstrate single operations as well as examples which combine several different operations. 
 
-Examples 1-9 are simply basic functionality examples with the types we have encoded for our language.
-These make use of our expr data types as well as our semantics.
-
-Examples 11-16 are cases we devised specifically to test the functionality of our User data type, and accessing
-individual fields of the User tuples. They include things such as checking if a user exists, or getting their name and permissions.
-
-Examples 100 and 110 are cases relating to our list of users, which is still in the process of development, but specifically
-relate to the manipulation of our list of valid users.
-
-Command List with expected output: 
+## Example command list, and expected output: 
+Look below for a list of examples of the different features our language has. Test them by running the example names in ghci:
+Bad examples are anything that results in an Error.
 ```haskell
-ex1  : Info ("Connor",Admin)  
-ex2  : Info ("Tim Timmerson",Banned)  
-ex3  : B Granted  
-ex4  : B Denied  
-ex5  : Lit 15  
-ex5a : Error  
-ex6  : Lit 1  
-ex7  : B Granted  
-ex8  : B Denied  
-ex9  : Lit 10  
-ex11 : Info ("Eric Walkingshaw",Admin)  
-ex12 : "TestUser"  
-ex13 : Just (Info ("Connor",Admin))  
-ex14 : Nothing  
-ex15 : Admin  
-ex16 : Regular  
-ex100 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned)]  
-ex110 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned),Info ("John Doe",Banned),Info ("First Last",Admin)]  
+addEx: Lit 15
+addEx2: Lit 23
+incEx1: Lit 6
+decEx1: Lit 69 
+ifEx1: Text "This should print"
+ifEx2: Text “this FALSE text should print”
+ifEx3: Lit 15
+ifEx4: Lit 0 
+ifExErr: Error
+andEx1: B Granted
+andEx2: B Denied
+andEx3: Error
+orEx1: B Granted 
+orEx2: B Granted
+orEx3: Error 
+notEx1: B Denied 
+notEx2: B Granted
+notEx3: Error
+appendEx: [1,2,3,4,7]
+prependEx: [100,10,20,30,90]
+addToAllEx: [6,7,8,910]
+addListsEx:  [11,13,15]
+tupEx1: (Text "a",Lit 7)
+invertEx1: Text “a”
+invertEx2: Lit 7 
+varEx1: [Info ("Connor G","Hunter2"),Info ("Bob Smith","Hunter1"),Info ("Tim Timmerson","password")]
+varEx2: [Info ("Connor G","Hunter2"),Info ("Bob Smith","Hunter1"),Info ("Tim Timmerson","password"),Info ("Test User","Password123")]
+refEx1: Info ("Connor G","Hunter2")
+refEx2: Info ("Test User","Password123") 
+refEx3 “Hunter2”
+loginEx1: B Granted
+loginEx2: B Denied
+loginEx3: B Granted 
+loginEx4: B Denied
+loginIfEx1: Text "You are logged in"
+loginIfEx2: Lit 12 
 ```
