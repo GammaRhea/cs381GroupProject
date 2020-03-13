@@ -25,7 +25,8 @@ individual fields of the User tuples. They include things such as checking if a 
 Examples 100 and 110 are cases relating to our list of users, which is still in the process of development, but specifically
 relate to the manipulation of our list of valid users.
 
-Command List with expected output:  
+Command List with expected output: 
+```haskell
 ex1  : Info ("Connor",Admin)  
 ex2  : Info ("Tim Timmerson",Banned)  
 ex3  : B Granted  
@@ -44,3 +45,4 @@ ex15 : Admin
 ex16 : Regular  
 ex100 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned)]  
 ex110 : [Info ("Connor",Admin),Info ("Bob Smith",Regular),Info ("Tim Timmerson",Banned),Info ("John Doe",Banned),Info ("First Last",Admin)]  
+```
